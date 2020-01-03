@@ -4,6 +4,16 @@
 
   //
   // TODO: build the swim command fetcher here
+  const getSwimCommand = () => {
+    $.ajax({
+      url: 'http://127.0.0.1:3000',
+      type: 'GET',
+      success: (data) => SwimTeam.move(data),
+      error: (err, type, text) => console.log(err, type, text)
+    })
+  }
+
+  //setInterval(getSwimCommand, 500);
   //
 
   /////////////////////////////////////////////////////////////////////
@@ -11,7 +21,7 @@
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
 
-  const ajaxFileUplaod = (file) => {
+  const ajaxFileUpload = (file) => {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
@@ -43,7 +53,7 @@
       return;
     }
 
-    ajaxFileUplaod(file);
+    ajaxFileUpload(file);
   });
 
 })();
