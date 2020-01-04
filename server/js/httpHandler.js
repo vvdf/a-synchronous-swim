@@ -16,28 +16,42 @@ module.exports.initialize = (elementCount) => {
 };
 
 module.exports.router = (req, res, next = ()=>{}) => {
-  // console.log('Serving request type ' + req.method + ' for url ' + req.url);
-  res.writeHead(200, headers);
+  console.log('Serving request type ' + req.method + ' for url ' + req.url);
+  let callbackNext = false;
   if (req.method === 'GET') {
     switch (req.url) {
-      case "/swim": res.end(messageQueue.dequeue()); break;
+      case "/swim":
+        res.writeHead(200, headers);
+        res.end(messageQueue.dequeue());
+        break;
       case "/background":
-        fs.readFile('./background.jpg', (err, data) => {
+        console.log(module.exports.backgroundImageFile);
+        callbackNext = true;
+        fs.readFile(module.exports.backgroundImageFile, (err, data) => {
           if (err) {
+            res.writeHead(404, headers);
             console.log("ERROR:", err, data);
-            res.end(err);
+            res.end();
           } else {
+            res.writeHead(200, headers);
             console.log("SUCCESS:", data);
             res.end(data);
           }
+          next();
         });
         break;
-      default: res.end(); break;
+      default:
+        res.writeHead(200, headers);
+        res.end();
+        break;
     }
   } else {
+    res.writeHead(200, headers);
     res.end();
   }
-  next(); // invoke next() at the end of a request to help with testing!
+  if (!callbackNext) {
+    next();
+  }
 };
 
 getRandomCommand = () => {

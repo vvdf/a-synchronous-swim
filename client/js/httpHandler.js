@@ -13,7 +13,7 @@
     })
   }
 
-  setInterval(getSwimCommand, 100);
+  setInterval(getSwimCommand, 3000);
 
   const getBackground = () => {
     $.ajax({
