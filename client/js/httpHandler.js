@@ -6,16 +6,27 @@
   // TODO: build the swim command fetcher here
   const getSwimCommand = () => {
     $.ajax({
-      url: 'http://127.0.0.1:3000',
+      url: serverUrl + "/swim",
       type: 'GET',
       success: (data) => SwimTeam.move(data),
       error: (err, type, text) => console.log("ERROR: ", err, type, text)
     })
   }
 
-  // SwimTeam.getCmd = getSwimCommand;
   setInterval(getSwimCommand, 100);
-  //
+
+  const getBackground = () => {
+    $.ajax({
+      url: serverUrl + "/background",
+      type: 'GET',
+      success: (data) => {
+        $('.pool').css('background-image', `url('${serverUrl}/background')`);
+        $('.pool').css('background-size', 'cover');
+      },
+      error: (err, type, text) => console.log("ERROR: ", err, type, text)
+    })
+  }
+  getBackground();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
@@ -28,7 +39,7 @@
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: serverUrl,
       cache: false,
       contentType: false,
       processData: false,

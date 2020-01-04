@@ -19,7 +19,21 @@ module.exports.router = (req, res, next = ()=>{}) => {
   // console.log('Serving request type ' + req.method + ' for url ' + req.url);
   res.writeHead(200, headers);
   if (req.method === 'GET') {
-    res.end(messageQueue.dequeue());
+    switch (req.url) {
+      case "/swim": res.end(messageQueue.dequeue()); break;
+      case "/background":
+        fs.readFile('./background.jpg', (err, data) => {
+          if (err) {
+            console.log("ERROR:", err, data);
+            res.end(err);
+          } else {
+            console.log("SUCCESS:", data);
+            res.end(data);
+          }
+        });
+        break;
+      default: res.end(); break;
+    }
   } else {
     res.end();
   }
