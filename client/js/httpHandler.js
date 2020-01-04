@@ -9,11 +9,12 @@
       url: 'http://127.0.0.1:3000',
       type: 'GET',
       success: (data) => SwimTeam.move(data),
-      error: (err, type, text) => console.log(err, type, text)
+      error: (err, type, text) => console.log("ERROR: ", err, type, text)
     })
   }
 
-  //setInterval(getSwimCommand, 500);
+  // SwimTeam.getCmd = getSwimCommand;
+  setInterval(getSwimCommand, 100);
   //
 
   /////////////////////////////////////////////////////////////////////
