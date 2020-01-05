@@ -1,4 +1,5 @@
 const fs = require('fs');
+const qs = require('querystring');
 const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
@@ -45,6 +46,39 @@ module.exports.router = (req, res, next = ()=>{}) => {
         res.end();
         break;
     }
+  } else if (req.method === 'POST') {
+    console.log("ENTERING POST PARSING");
+    callbackNext = true;
+
+    var bufferArray = [];
+    req.on('data', (chunk) => {
+      bufferArray.push(chunk);
+    });
+    req.on('end', function () {
+      console.log("BufferArray: ", bufferArray);
+      var buffer= Buffer.concat(bufferArray);
+      var post = multipart.getFile(buffer);
+      if (post === null) {
+        // it's probably an actual file, not form data
+        post = multipart.parse(buffer);
+      } else {
+        // it IS form data, so only send the data property
+        post = post['data'];
+      }
+      console.log('Buffer (after concat)', buffer);
+      console.log('Post (after getFile parsing)', post);
+      console.log(post);
+      fs.writeFile(module.exports.backgroundImageFile, post, (err) => {
+        if (err) {
+          console.log('ERROR WRITING:', err);
+        } else {
+          console.log('SUCCESS WRITING');
+        }
+        res.writeHead(201, headers);
+        res.end();
+        next();
+      });
+    })
   } else {
     res.writeHead(200, headers);
     res.end();

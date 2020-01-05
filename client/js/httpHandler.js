@@ -13,7 +13,7 @@
     })
   }
 
-  setInterval(getSwimCommand, 3000);
+  // setInterval(getSwimCommand, 3000);
 
   const getBackground = () => {
     $.ajax({
@@ -36,16 +36,23 @@
   const ajaxFileUpload = (file) => {
     var formData = new FormData();
     formData.append('file', file);
+    console.log(formData.get('file'));
     $.ajax({
       type: 'POST',
       data: formData,
-      url: serverUrl,
+      url: serverUrl + '/background',
       cache: false,
       contentType: false,
       processData: false,
       success: () => {
         // reload the page
+        // on successful post, follow up with a call to get a new background
+        console.log("SUCCESSFUL POST (CLIENT)");
+        getBackground();
         window.location = window.location.href;
+      },
+      error: (err, errType, errText) => {
+        console.log("ERROR POST (CLIENT):", err, errType, errText);
       }
     });
   };
